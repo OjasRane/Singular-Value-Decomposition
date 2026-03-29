@@ -1,4 +1,5 @@
 import numpy as np
+from metrics.metrics import _extract_diagonal
 
 def optimized_svd(A):
     U, S, Vt = np.linalg.svd(A, full_matrices=False)
@@ -7,7 +8,7 @@ def optimized_svd(A):
 def reconstruct(U, S, Vt, k=None):
     if k is not None:
         U = U[:, :k]
-        S = S[:k]
+        S = _extract_diagonal(S)[:k]
         Vt = Vt[:k]
 
     Sigma = np.diag(S)
