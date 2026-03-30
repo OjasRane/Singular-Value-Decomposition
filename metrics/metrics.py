@@ -18,6 +18,16 @@ def reconstruction_error(S, k):
     S = _extract_diagonal(S)
     return np.sqrt(np.sum(S[k:]**2))
 
+def reconstruction_error_squared(S, k):
+    S = _extract_diagonal(S)
+    return np.sum(S[k:]**2)
+
 def energy_retained(S, k):
     S = _extract_diagonal(S)
     return np.sum(S[:k]**2) / np.sum(S**2)
+
+def compression_ratio(image_shape, k):
+    return k*(np.sum(image_shape) + 1) / np.prod(image_shape)
+
+def percent_compression_ratio(image_shape, k):
+    return 100*k*(np.sum(image_shape[:2]) + 1) / np.prod(image_shape[:2])
