@@ -36,4 +36,8 @@ def compress_from_scratch(img, k):
     return compressed_image
 
 def get_k_from_compression_ratio(image_shape, compression_ratio, percentage=False):
-    return int(compression_ratio * (np.prod(image_shape[:2]) / (1 + np.sum(image_shape[:2]))))
+    if percentage:
+        k = int((compression_ratio / 100) * (np.prod(image_shape[:2]) / (1 + np.sum(image_shape[:2]))))
+    else:
+        k = int(compression_ratio * (np.prod(image_shape[:2]) / (1 + np.sum(image_shape[:2]))))
+    return k
