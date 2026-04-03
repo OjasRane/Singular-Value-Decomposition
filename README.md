@@ -20,6 +20,7 @@ Project directory structure:
 │   └── understanding_svd_with_image_compression.ipynb
 ├── application/
 │   └── image_compression.py
+├── data/
 ├── mathematical_foundation/
 │   └── svd_from_scratch.py
 ├── metrics/
@@ -33,7 +34,7 @@ Project directory structure:
 
 - `analysis/`: Jupyter notebook and experimental analysis files.
 - `application/`: Image compression utilities and high-level helpers.
-- `data/`: Placeholder for input/output data files (in .gitignore).
+- `data/`: Input/output data files and test images.
 - `mathematical_foundation/`: Educational implementations of SVD.
 - `metrics/`: Functions for measuring compression quality.
 - `optimized_method/`: Performance-focused SVD reconstruction.
