@@ -10,7 +10,7 @@ $$\begin{aligned}
 &\text{Form }V\text{ matrix using }A^{T}A\\
 &\text{Form }\Sigma\text{ matrix using eigenvalues of }A^{T}A\\
 &\text{Consider matrix }V\text{ as:}\\
-&V=\begin{bmatrix}v_{1}\\v_{2}\\\vdots\\v_{i}\\\vdots\\v_{n}\end{bmatrix}\quad V\in\mathbb{R}^{n\times n};\quad v_{i}\in\mathbb{R}^{1\times n}\\
+&V=\begin{bmatrix}v_{1}&v_{2}&\cdots&v_{i}&\cdots&v_{n}\end{bmatrix}\quad V\in\mathbb{R}^{n\times n};\quad v_{i}\in\mathbb{R}^{n\times1}\\
 &\text{and matrix }U\text{ as:}\\
 &U=\begin{bmatrix}u_{1}&u_{2}&\cdots&u_{i}&\cdots&u_{m}\end{bmatrix}\quad U\in\mathbb{R}^{m\times m};\quad u_{i}\in\mathbb{R}^{m\times1}\\
 &\text{Relation between }u_{i}\text{ and }v_{i}:\\
