@@ -27,7 +27,7 @@ def energy_retained(S, k):
     return np.sum(S[:k]**2) / np.sum(S**2)
 
 def compression_ratio(image_shape, k):
-    return k*(np.sum(image_shape) + 1) / np.prod(image_shape)
+    return k*(np.sum(image_shape[:2]) + 1) / np.prod(image_shape[:2])
 
 def percent_compression_ratio(image_shape, k):
     return 100*k*(np.sum(image_shape[:2]) + 1) / np.prod(image_shape[:2])
