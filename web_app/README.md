@@ -156,6 +156,7 @@ From the parent project:
 - [Application Module](../application/) - Image compression utilities
 - [Mathematical Foundation](../mathematical_foundation/) - SVD implementation details
 - [Analysis Notebook](../analysis/) - Educational notebook with detailed explanations
+- [SVD Lab](https://svdlab.streamlit.app) - Live deployed app on Streamlit Community Cloud
 
 ## License
 
