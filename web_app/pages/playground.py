@@ -17,9 +17,9 @@ st.set_page_config(
 st.title("Playground", text_alignment="center")
 
 if st.checkbox("Grayscale", value=True, key="grayscale"):
-    image = cv.imread(r"data\image.png", cv.IMREAD_GRAYSCALE)
+    image = cv.imread(r"data/image.png", cv.IMREAD_GRAYSCALE)
 else:
-    image = cv.imread(r"data\image.png")
+    image = cv.imread(r"data/image.png")
 
 k = min(image.shape[:2])
 
