@@ -19,12 +19,13 @@ SVD Lab is an interactive platform that demonstrates how Singular Value Decompos
 
 ```
 web_app/
+├── .streamlit/
+│   └── config.toml         # Streamlit configuration
 ├── landing_page.py          # Main landing page with navigation
 ├── pages/
 │   ├── compressor.py        # Image compression tool
 │   ├── playground.py        # Interactive playground mode
-├── assets/                  # Static assets (images, icons, etc.)
-└── README.md               # This file
+└── README.md
 ```
 
 ## Installation
@@ -58,7 +59,8 @@ web_app/
 
 3. Install dependencies:
    ```bash
-   pip install -r requirements.txt
+   pip install -r requirements.txt  # Install dependencies
+   pip install -e .                  # Register project root for imports
    ```
 
 ## Running the Application
@@ -102,8 +104,8 @@ Practical tool for compressing your own images:
 
 - File uploader for PNG, JPG, and JPEG formats
 - Grayscale/color toggle
-- Automatic `k` parameter calculation based on desired compression ratio
-- Side-by-side image comparison
+- `k` input prefilled using a default 0.25 compression-ratio estimate
+- Compressed image preview
 - Download options (PNG or JPEG format)
 - Home button for navigation
 

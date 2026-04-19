@@ -12,27 +12,35 @@ This repository demonstrates Singular Value Decomposition (SVD) applied to image
 More detailed READMEs are provided in each directory.
 
 ## Repository Structure
-Project directory structure:
+Project directory structure (excluding paths ignored by `.gitignore`):
 
 ```
 .
+├── .devcontainer/
 ├── analysis/
 │   └── understanding_svd_with_image_compression.ipynb
 ├── application/
+│   ├── __init__.py
 │   └── image_compression.py
 ├── data/
 ├── mathematical_foundation/
+│   ├── __init__.py
 │   └── svd_from_scratch.py
 ├── metrics/
+│   ├── __init__.py
 │   └── metrics.py
 ├── optimized_method/
+│   ├── __init__.py
 │   └── optimized_svd.py
 ├── web_app/
+│   ├── .streamlit/
+│   │   └── config.toml
 │   ├── landing_page.py
-│   ├── assets/
 │   └── pages/
 │       ├── compressor.py
 │       └── playground.py
+├── LICENSE
+├── pyproject.toml
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
@@ -50,7 +58,7 @@ Project directory structure:
 
 - `numpy`: For processing arrays.
 - `matplotlib`: For displaying outputs, metrics.
-- `opencv-python`: For processing images.
+- `opencv-python`: For processing images. (Use `opencv-python-headless` while deploying on headless environments)
 - `jupyterlab`: For running Jupyter notebooks.
 - `streamlit`: For running the interactive web application.
 
@@ -78,7 +86,8 @@ source venv/bin/activate
 ### Install dependencies
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt  # Install dependencies
+pip install -e .                  # Register project root for imports
 ```
 The primary image compression workflow is in `application/image_compression.py`.
 
@@ -128,6 +137,7 @@ k = get_k_from_compression_ratio(img.shape, compression_ratio=0.5)
 ## Live Demo
 
 [GitHub Pages](https://ojasrane.github.io/Singular-Value-Decomposition)
+
 [SVD Lab](https://svdlab.streamlit.app)
 
 ## Future Scope
