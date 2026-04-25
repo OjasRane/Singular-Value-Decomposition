@@ -17,3 +17,6 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 include = ["application", "metrics", "optimized_method", "mathematical_foundation"]
+
+[tool.uv]
+link-mode = "copy"
