@@ -25,9 +25,9 @@ def compress_from_scratch(img, k):
         compressed_image = optimized_svd.reconstruct(U, S, Vt, k)
     elif img.ndim == 3:
         B, G, R = cv.split(img)
-        compressed_B = compress_from_scratch(B)
-        compressed_G = compress_from_scratch(G)
-        compressed_R = compress_from_scratch(R)
+        compressed_B = compress_from_scratch(B, k)
+        compressed_G = compress_from_scratch(G, k)
+        compressed_R = compress_from_scratch(R, k)
         compressed_image = cv.merge([np.clip(compressed_B, 0, 255),
                                     np.clip(compressed_G, 0, 255),
                                     np.clip(compressed_R, 0, 255)]).astype("uint8")
