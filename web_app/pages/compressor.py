@@ -23,8 +23,11 @@ if image is not None:
     k = min(image.shape[:2])
     st.number_input("k", min_value=1, max_value=k, value=image_compression.get_k_from_compression_ratio(image.shape,
                                                                                                    0.25), key="k")
-    compressed_image = cv.cvtColor(np.clip(image_compression.optimized_compress(image, st.session_state["k"]), 0, 255).astype("uint8"),
+    if not st.session_state["greyscale"]:
+        compressed_image = cv.cvtColor(np.clip(image_compression.optimized_compress(image, st.session_state["k"]), 0, 255).astype("uint8"),
                         cv.COLOR_BGR2RGB)
+    else:
+        compressed_image = np.clip(image_compression.optimized_compress(image, st.session_state["k"]), 0, 255).astype("uint8")
     st.image(compressed_image, caption="Compressed Image",
              width=300)
     st.radio("Select the file format:",
