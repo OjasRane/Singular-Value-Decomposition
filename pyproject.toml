@@ -3,8 +3,17 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "svd-image-compression"
+name = "svd"
 version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "jupyterlab==4.5.6",
+    "matplotlib==3.10.8",
+    "numpy==2.4.4",
+    "opencv-python-headless==4.13.0.92",
+    "pillow==12.2.0",
+    "streamlit==1.56.0",
+]
 
 [tool.setuptools.packages.find]
 include = ["application", "metrics", "optimized_method", "mathematical_foundation"]

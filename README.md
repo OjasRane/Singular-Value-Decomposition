@@ -16,23 +16,30 @@ Project directory structure (excluding paths ignored by `.gitignore`):
 
 ```
 .
-├── .devcontainer/
+├── .python-version
 ├── analysis/
+│   ├── README.md
 │   └── understanding_svd_with_image_compression.ipynb
 ├── application/
+│   ├── README.md
 │   ├── __init__.py
 │   └── image_compression.py
 ├── data/
+│   └── image.png
 ├── mathematical_foundation/
+│   ├── README.md
 │   ├── __init__.py
 │   └── svd_from_scratch.py
 ├── metrics/
+│   ├── README.md
 │   ├── __init__.py
 │   └── metrics.py
 ├── optimized_method/
+│   ├── README.md
 │   ├── __init__.py
 │   └── optimized_svd.py
 ├── web_app/
+│   ├── README.md
 │   ├── .streamlit/
 │   │   └── config.toml
 │   ├── landing_page.py
@@ -40,10 +47,11 @@ Project directory structure (excluding paths ignored by `.gitignore`):
 │       ├── compressor.py
 │       └── playground.py
 ├── LICENSE
-├── pyproject.toml
 ├── README.md
+├── pyproject.toml
 ├── requirements.txt
-├── .gitignore
+├── uv.lock
+└── .gitignore
 ```
 
 - `analysis/`: Jupyter notebook and experimental analysis files.
@@ -69,12 +77,23 @@ Project directory structure (excluding paths ignored by `.gitignore`):
 git clone https://github.com/OjasRane/Singular-Value-Decomposition.git
 cd Singular-Value-Decomposition
 ```
+## Running this project:
 
-### Creating and activating virtual environment
+### Using uv (Recommended):
+Install uv if needed by visiting [uv installation guide](https://docs.astral.sh/uv/getting-started/installation/)
+
+Run the following command to create a virtual environment and installing dependencies.
+```
+uv sync
+```
+
+### Using pip:
+
+#### Creating and activating virtual environment
 For Windows:
 ```ps1
 python -m venv venv
-venv\Scripts\Activate
+venv\Scripts\Activate.ps1
 ```
 
 For MacOS/Linux:
@@ -83,11 +102,10 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-### Install dependencies
+#### Install dependencies
 
 ```bash
-pip install -r requirements.txt  # Install dependencies
-pip install -e .                  # Register project root for imports
+pip install -e .
 ```
 The primary image compression workflow is in `application/image_compression.py`.
 

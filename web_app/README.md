@@ -37,38 +37,47 @@ web_app/
 
 ### Setup
 
-1. Navigate to the project root directory:
+Navigate to the project root directory:
+```bash
+cd Singular-Value-Decomposition
+```
+
+#### Using uv:
+```
+uv sync
+```
+
+#### Using pip:
+1. Create a virtual environment (Ignore is already done):
    ```bash
-   cd Singular-Value-Decomposition
+   python -m venv .venv                         # For Windows
+   python3 -m venv .venv                        # For MacOS/Linux
    ```
 
-2. Create and activate a virtual environment:
-   
-   Ignore if already done.
-
-   For Windows:
+2. Activate the virtual environment:
    ```bash
-   python -m venv venv
-   venv\Scripts\Activate.ps1 
-   ```
-   For MacOS/Linux:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
+   .venv\Scripts\Activate.ps1                   # For Windows
+   source .venv/bin/activate                    # For MacOS/Linux
    ```
 
-3. Install dependencies:
+3. Installing dependencies:
    ```bash
-   pip install -r requirements.txt  # Install dependencies
-   pip install -e .                  # Register project root for imports
+   pip install -e .
    ```
 
 ## Running the Application
 
 From the project root directory, start the Streamlit app:
 
+### Using uv:
 ```bash
-streamlit run web_app/landing_page.py
+uv run streamlit run web_app\landing_page.py    # For Windows
+uv run streamlit run web_app/landing_page.py    # For MacOS/Linux
+```
+### Using pip:
+```bash
+streamlit run web_app\Landing_page.py           # For Windows
+streamlit run web_app/landing_page.py           # For MacOS/Linux
 ```
 
 The application will open in your default web browser (typically http://localhost:8501)
