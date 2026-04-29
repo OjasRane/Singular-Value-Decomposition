@@ -160,5 +160,5 @@ k = get_k_from_compression_ratio(img.shape, compression_ratio=0.5)
 
 ## Future Scope
 
-- Compare compression using algorithm made from scratch and the algorithm using NumPy routines. ✨Why? Because in some tests on the author's machine, scratch implementation was faster than the NumPy routine by almost ~200ms (±10ms), hence, it raises a question: why? Results may vary — try it yourself using the magic method `%%timeit` in the notebook.✨
 - Create a custom file extension `.svd` to efficiently store images and display them when needed.
+- Add application of SVD to Principal Component Analysis (PCA)
