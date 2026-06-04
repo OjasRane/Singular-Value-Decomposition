@@ -11,6 +11,8 @@ st.set_page_config(
 )
 st.title("Compressor", text_alignment="center")
 
+st.markdown("Note that, this is very slow, because on every change of $k$, the image is decomposed again, and decomposing an image is computationally expensive.")
+
 image = st.file_uploader("Upload your image", type=["png", "jpg", "jpeg"])
 st.checkbox("Greyscale", value=True, key="greyscale")
 
