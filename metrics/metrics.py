@@ -26,8 +26,8 @@ def energy_retained(S, k):
     S = _extract_diagonal(S)
     return np.sum(S[:k]**2) / np.sum(S**2)
 
-def compression_ratio(image_shape, k):
-    return k*(np.sum(image_shape[:2]) + 1) / np.prod(image_shape[:2])
+def compression_ratio(image_shape, k, dtype=None):
+    return k*(np.sum(image_shape[:2]) + 1) / np.prod(image_shape[:2]) if dtype is None else (k*(np.sum(image_shape[:2]) + 1) / np.prod(image_shape[:2])) * np.dtype(dtype).itemsize
 
-def percent_compression_ratio(image_shape, k):
-    return 100*k*(np.sum(image_shape[:2]) + 1) / np.prod(image_shape[:2])
+def percent_compression_ratio(image_shape, k, dtype=None):
+    return 100*k*(np.sum(image_shape[:2]) + 1) / np.prod(image_shape[:2]) if dtype is None else 100*k*(np.sum(image_shape[:2]) + 1) / np.prod(image_shape[:2]) * np.dtype(dtype).itemsize

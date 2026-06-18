@@ -60,7 +60,7 @@ with col2:
                  channels="BGR")
 
 with st.container(border=True, key="info_container"):
-    st.markdown(f"For $k<{get_k_from_compression_ratio(image.shape, 1)}$ compression is feasible else the size increases!",
+    st.markdown(f"For $k<{get_k_from_compression_ratio(image.shape, 1)}$ compression is feasible else the size increases! (True if data types are ignored)",
                 text_alignment="center")
 
 st.slider("k", min_value=1, max_value=k, value=k, key="k")
