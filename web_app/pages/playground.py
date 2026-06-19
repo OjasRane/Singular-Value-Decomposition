@@ -2,7 +2,7 @@ import streamlit as st
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
-from optimized_method import optimized_svd
+from application import image_compression
 from metrics import metrics
 from application.image_compression import get_k_from_compression_ratio
 
@@ -17,14 +17,18 @@ if st.checkbox("Grayscale", value=True, key="grayscale"):
 else:
     image = cv.imread(r"data/image.png")
 
+if "previous_grayscale" not in st.session_state:
+    st.session_state["previous_grayscale"] = not st.session_state["grayscale"]
+
 k = min(image.shape[:2])
 
 if "k" not in st.session_state:
     st.session_state["k"] = k
 
-@st.cache_data
-def svd(A):
-    return optimized_svd.optimized_svd(A)
+if st.session_state["previous_grayscale"] is not st.session_state["grayscale"]:
+    st.session_state["compressor_playground"] = image_compression.SVDCompressor(image)
+    st.session_state["compressor_playground"].decompose()
+    st.session_state["previous_grayscale"] = st.session_state["grayscale"]
 
 col1, col2 = st.columns(2)
 
@@ -38,24 +42,13 @@ with col1:
                  channels="BGR")
 
 with col2:
-    if image.ndim == 2:
-        U, S, Vt = svd(image)
-        compressed_image = optimized_svd.reconstruct(U, S, Vt, st.session_state["k"])
-        compressed_image_display = np.clip(compressed_image, 0, 255).astype("uint8")
-        st.image(compressed_image_display, caption=f"""Reconstructed Image
+    if st.session_state["grayscale"]:
+        compressed_image = st.session_state["compressor_playground"].reconstruct(st.session_state["k"])
+        st.image(compressed_image, caption=f"""Reconstructed Image
                                                \nCompression Ratio={np.round(metrics.compression_ratio(image.shape, st.session_state['k']), 2)}""")
     else:
-        B, G, R = cv.split(image)
-        B_U, B_S, B_Vt = svd(B)
-        G_U, G_S, G_Vt = svd(G)
-        R_U, R_S, R_Vt = svd(R)
-
-        compressed_B = optimized_svd.reconstruct(B_U, B_S, B_Vt, st.session_state["k"])
-        compressed_G = optimized_svd.reconstruct(G_U, G_S, G_Vt, st.session_state["k"])
-        compressed_R = optimized_svd.reconstruct(R_U, R_S, R_Vt, st.session_state["k"])
-        compressed_image = cv.merge([compressed_B, compressed_G, compressed_R])
-        compressed_image_display = np.clip(compressed_image, 0, 255).astype("uint8")
-        st.image(compressed_image_display, caption=f"""Reconstructed Image
+        compressed_image = st.session_state["compressor_playground"].reconstruct(st.session_state["k"])
+        st.image(compressed_image, caption=f"""Reconstructed Image
                                                        \nCompression Ratio={np.round(metrics.compression_ratio(image.shape, st.session_state['k']), 2)}""",
                  channels="BGR")
 
@@ -75,12 +68,12 @@ if st.session_state["plot"] == "Reconstruction Error":
     error = np.empty(st.session_state["k"])
     if image.ndim == 2:
         for i in kx:
-            error[i-1] = metrics.reconstruction_error(S, i)
+            error[i-1] = metrics.reconstruction_error(st.session_state["compressor_playground"].decomposed_image[1], i)
     else:
         for i in kx:
-            error[i-1] = np.sqrt(metrics.reconstruction_error_squared(B_S, i) +
-                                 metrics.reconstruction_error_squared(G_S, i) +
-                                 metrics.reconstruction_error_squared(R_S, i))
+            error[i-1] = np.sqrt(metrics.reconstruction_error_squared(st.session_state["compressor_playground"].decomposed_B[1], i) +
+                                 metrics.reconstruction_error_squared(st.session_state["compressor_playground"].decomposed_G[1], i) +
+                                 metrics.reconstruction_error_squared(st.session_state["compressor_playground"].decomposed_R[1], i))
 
     ax.plot(kx, error)
     ax.set(xlabel="k", ylabel="Reconstruction Error", title="Reconstruction Error")
@@ -96,10 +89,10 @@ else:
     energy_retained = np.empty(st.session_state["k"])
     if image.ndim == 2:
         for i in kx:
-            energy_retained[i-1] = metrics.energy_retained(S, i)
+            energy_retained[i-1] = metrics.energy_retained(st.session_state["compressor_playground"].decomposed_image[1], i)
     else:
         for i in kx:
-            energy_retained[i-1] = (np.sum(B_S[:i]**2 + G_S[:i]**2 + R_S[:i]**2)) / (np.sum(B_S**2 + G_S**2 + R_S**2))
+            energy_retained[i-1] = (np.sum(st.session_state["compressor_playground"].decomposed_B[1][:i]**2 + st.session_state["compressor_playground"].decomposed_G[1][:i]**2 + st.session_state["compressor_playground"].decomposed_R[1][:i]**2)) / (np.sum(st.session_state["compressor_playground"].decomposed_B[1]**2 + st.session_state["compressor_playground"].decomposed_G[1]**2 + st.session_state["compressor_playground"].decomposed_R[1]**2))
 
     st.markdown(r"""
     $$

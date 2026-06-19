@@ -31,7 +31,7 @@ with col2:
         st.markdown(r"<h2>Compressor</h2>", unsafe_allow_html=True)
         st.text("Compress your image using singular value decomposition and download it.",
                 text_alignment="center")
-        if st.button("Try Now!", key="compressor"):
+        if st.button("Try Now!", key="compressor_page"):
             st.switch_page("pages/compressor.py")
     with st.container(border=True, height=305, key="repo_container", horizontal=True, horizontal_alignment="center"):
         st.markdown(r"<h2 align='center'>GitHub Repository</h2>", unsafe_allow_html=True)

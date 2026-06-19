@@ -11,10 +11,11 @@ st.set_page_config(
 )
 st.title("Compressor", text_alignment="center")
 
-st.markdown("Note that, this is very slow, because on every change of $k$, the image is decomposed again, and decomposing an image is computationally expensive.")
-
 image = st.file_uploader("Upload your image", type=["png", "jpg", "jpeg"])
 st.checkbox("Greyscale", value=True, key="greyscale")
+
+if "previous_greyscale" not in st.session_state:
+    st.session_state["previous_greyscale"] = not st.session_state["greyscale"]
 
 if image is not None:
     if st.session_state["greyscale"]:
@@ -22,16 +23,20 @@ if image is not None:
     else:
         image = cv.imdecode(np.frombuffer(image.read(), dtype=np.uint8), cv.IMREAD_COLOR)
 
+    if st.session_state["greyscale"] is not st.session_state["previous_greyscale"]:
+        st.session_state["compressor"] = image_compression.SVDCompressor(image)
+        st.session_state["compressor"].decompose(dtype=np.float32)
+        st.session_state["previous_greyscale"] = st.session_state["greyscale"]
+
     k = min(image.shape[:2])
     st.number_input("k", min_value=1, max_value=k, value=image_compression.get_k_from_compression_ratio(image.shape,
                                                                                                    0.25), key="k")
     if not st.session_state["greyscale"]:
-        compressed_image = cv.cvtColor(np.clip(image_compression.optimized_compress(image, st.session_state["k"]), 0, 255).astype("uint8"),
-                        cv.COLOR_BGR2RGB)
+        compressed_image = cv.cvtColor(st.session_state["compressor"].reconstruct(st.session_state["k"]), cv.COLOR_BGR2RGB)
     else:
-        compressed_image = np.clip(image_compression.optimized_compress(image, st.session_state["k"]), 0, 255).astype("uint8")
-    st.image(compressed_image, caption="Compressed Image",
-             width=300)
+        compressed_image = st.session_state["compressor"].reconstruct(st.session_state["k"])
+
+    st.image(compressed_image, caption="Compressed Image", channels="RGB", width=450)
     st.radio("Select the file format:",
              ["png", "jpeg"], key="file_type")
     compressed_image = Image.fromarray(compressed_image)
