@@ -144,7 +144,6 @@ The web app depends on:
 - **matplotlib**: Visualization
 
 From the parent project:
-- `optimized_method/optimized_svd.py`: SVD implementation
 - `application/image_compression.py`: Compression utilities
 - `metrics/metrics.py`: Quality metrics
 
