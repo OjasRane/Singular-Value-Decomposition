@@ -19,7 +19,7 @@ dependencies = [
 py-modules = ["utils"]
 
 [tool.setuptools.packages.find]
-include = ["application", "metrics", "optimized_method", "mathematical_foundation"]
+include = ["application", "metrics", "optimized_method", "mathematical_foundation", "svd_encoder"]
 
 [tool.uv]
 link-mode = "copy"
