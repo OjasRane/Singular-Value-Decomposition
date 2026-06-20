@@ -38,11 +38,15 @@ if image is not None:
 
     st.image(compressed_image, caption="Compressed Image", channels="RGB", width=450)
     st.radio("Select the file format:",
-             ["png", "jpeg"], key="file_type")
-    compressed_image = Image.fromarray(compressed_image)
+             ["png", "jpeg", "svd"], key="file_type")
     buffer = io.BytesIO()
-    compressed_image.save(buffer, format=str(st.session_state["file_type"]).upper())
-    compressed_image = buffer.getvalue()
+    if st.session_state["file_type"] != "svd":
+        compressed_image = Image.fromarray(compressed_image)
+        compressed_image.save(buffer, format=str(st.session_state["file_type"]).upper())
+        compressed_image = buffer.getvalue()
+    else:
+        st.session_state["compressor"].export_svd(buffer)
+        compressed_image = buffer.getvalue()
 
     st.markdown(r"**Note**: Downloading the image in above formats would not show difference in disk size and could be greater than original image")
     st.download_button("Download Compressed Image", file_name=f"SVD_Compression.{st.session_state['file_type']}",

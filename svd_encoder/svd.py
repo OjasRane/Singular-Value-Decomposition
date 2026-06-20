@@ -1,5 +1,7 @@
 import numpy as np
 import cv2 as cv
+from matplotlib import pyplot as plt
+
 from optimized_method import optimized_svd
 from utils import read_data
 
@@ -26,7 +28,7 @@ def export_svd(img, filename, k, grayscale, version=1):
         R_U, R_S, R_Vt = optimized_svd.optimized_svd(R, dtype=np.float32)
         R_U, R_S, R_Vt = R_U[:, :k], R_S[:k], R_Vt[:k]
 
-    with open(filename, 'wb') as f:
+    with open(filename, "wb") as f:
         f.write("SVD".encode("utf-8"))
         f.write(int.to_bytes(version, 1, byteorder="little"))
         if grayscale:
@@ -52,8 +54,12 @@ def export_svd(img, filename, k, grayscale, version=1):
             R_Vt.tofile(f, sep="")
         f.write("QED".encode("utf-8"))
 
-def read_svd(filename):
-    with open(filename, 'rb') as f:
+def read_svd(source):
+    if hasattr(source, "read"):
+        f = source
+    else:
+        f = open(source, "rb")
+    try:
         f.seek(-3, 2)
         footer = f.read(3)
         f.seek(0)
@@ -72,7 +78,7 @@ def read_svd(filename):
                     U = np.frombuffer(read_data(f, U_size), dtype=np.float32).reshape(m, k)
                     S = np.frombuffer(read_data(f, S_size), dtype=np.float32)
                     Vt = np.frombuffer(read_data(f, Vt_size), dtype=np.float32).reshape(k, n)
-                    image = optimized_svd.reconstruct(U, S, Vt)
+                    image = np.clip(optimized_svd.reconstruct(U, S, Vt), 0, 255).astype("uint8")
                     return image, grayscale
                 else:
                     B_U = np.frombuffer(read_data(f, U_size), dtype=np.float32).reshape(m, k)
@@ -97,3 +103,6 @@ def read_svd(filename):
                 raise ValueError("Invalid Version")
         else:
             raise ValueError("Invalid .svd file")
+    finally:
+        if not hasattr(source, "read"):
+            f.close()

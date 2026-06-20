@@ -60,13 +60,15 @@ class SVDCompressor:
     def __init__(self, image):
         if isinstance(image, np.ndarray):
                 self.image = image
-                self.dim = image.ndim
+                self.grayscale = (image.ndim == 2)
         else:
             raise TypeError("A ndarray of 2 or 3 dimension was expected")
+        self.m, self.n = image.shape[0], self.image.shape[1]
         self.decomposed_image = None
         self.decomposed_B = None
         self.decomposed_G = None
         self.decomposed_R = None
+        self.k = None
 
     def decompose(self, dtype=np.float64):
         """
@@ -90,6 +92,7 @@ class SVDCompressor:
         :param k: The number of singular values to use for reconstruction.
         :return: Reconstructed Image.
         """
+        self.k = k
         if self.image.ndim == 2:
             U, S, Vt = self.decomposed_image
             return np.clip(optimized_svd.reconstruct(U, S, Vt, k), 0, 255).astype("uint8")
@@ -104,3 +107,44 @@ class SVDCompressor:
             G = np.clip(optimized_svd.reconstruct(U, S, Vt, k), 0, 255).astype("uint8")
 
             return cv.merge([B, G, R])
+
+    def export_svd(self, buffer, version=1):
+        buffer.write("SVD".encode("utf-8"))
+        buffer.write(int.to_bytes(version, 1, "little"))
+        buffer.write("G".encode("utf-8") if self.grayscale else "C".encode("utf-8"))
+        buffer.write(int.to_bytes(self.m, 4, "little"))
+        buffer.write(int.to_bytes(self.n, 4, "little"))
+        buffer.write(int.to_bytes(self.k, 4, "little"))
+        if self.grayscale:
+            U, S, Vt = self.decomposed_image
+            U = U[:, :self.k]
+            buffer.write(U.tobytes())
+            S = S[:self.k]
+            buffer.write(S.tobytes())
+            Vt = Vt[:self.k, :]
+            buffer.write(Vt.tobytes())
+        else:
+            U, S, Vt = self.decomposed_B
+            U = U[:, :self.k]
+            buffer.write(U.tobytes())
+            S = S[:self.k]
+            buffer.write(S.tobytes())
+            Vt = Vt[:self.k, :]
+            buffer.write(Vt.tobytes())
+
+            U, S, Vt = self.decomposed_G
+            U = U[:, :self.k]
+            buffer.write(U.tobytes())
+            S = S[:self.k]
+            buffer.write(S.tobytes())
+            Vt = Vt[:self.k, :]
+            buffer.write(Vt.tobytes())
+
+            U, S, Vt = self.decomposed_R
+            U = U[:, :self.k]
+            buffer.write(U.tobytes())
+            S = S[:self.k]
+            buffer.write(S.tobytes())
+            Vt = Vt[:self.k, :]
+            buffer.write(Vt.tobytes())
+        buffer.write("QED".encode("utf-8"))
