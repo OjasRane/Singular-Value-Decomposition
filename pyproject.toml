@@ -15,6 +15,9 @@ dependencies = [
     "streamlit==1.56.0",
 ]
 
+[tool.setuptools]
+py-modules = ["utils"]
+
 [tool.setuptools.packages.find]
 include = ["application", "metrics", "optimized_method", "mathematical_foundation"]
 

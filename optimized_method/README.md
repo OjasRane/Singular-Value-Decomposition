@@ -12,12 +12,12 @@ This directory contains an optimized implementation of Singular Value Decomposit
   - Returns `U`, `S`, and `Vt` using `numpy.linalg.svd` with `full_matrices=False`.
 - `reconstruct(U, S, Vt, k=None)`: Reconstructs the original matrix from its SVD factors.
   - If `k` is provided, it performs a rank-`k` approximation by truncating the SVD components.
-  - Uses `_extract_diagonal` from `metrics.metrics` to ensure singular values are handled correctly.
+  - Uses `extract_diagonal` from `utils` to ensure singular values are handled correctly.
 
 ## Dependencies
 
 - `numpy`
-- `metrics/metrics.py` from the project for `_extract_diagonal`
+- `./utils.py` from the project for `extract_diagonal`
 
 ## Example
 
