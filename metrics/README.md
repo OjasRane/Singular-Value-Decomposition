@@ -224,3 +224,4 @@ print(f"Minimum k to retain {target_energy*100}% energy: {min_k}")
 - [Image Compression Module](../application/README.md) - High-level image compression utilities
 - [Optimized SVD](../optimized_method/README.md) - Efficient SVD computation
 - [Mathematical Foundation](../mathematical_foundation/README.md) - SVD theory and implementation from scratch
+- [SVD Encoder](../svd_encoder/README.md) - Custom binary encoder/decoder for SVD-compressed images

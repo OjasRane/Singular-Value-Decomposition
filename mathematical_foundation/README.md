@@ -68,3 +68,4 @@ print("V^T:\n", Vt)
 - `application/image_compression.py` - Uses SVD to compress images.
 - `optimized_method/optimized_svd.py` - Contains a more efficient SVD implementation built around optimized NumPy operations.
 - `metrics/metrics.py` - Provides metrics for evaluating SVD-based reconstruction quality.
+- `svd_encoder/svd.py` - Implements a custom `.svd` file format to serialize, store, and reconstruct compressed SVD components.

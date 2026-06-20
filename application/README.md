@@ -171,3 +171,10 @@ This module depends on:
 - Local modules: `optimized_method.optimized_svd` and `mathematical_foundation.svd_from_scratch`.
 
 See the main project `requirements.txt` for full dependency list.
+
+## See Also
+
+- [Optimized SVD](../optimized_method/README.md) - Leveraged to perform SVD computations.
+- [Mathematical Foundation](../mathematical_foundation/README.md) - Core SVD theory and scratch implementation.
+- [Metrics Module](../metrics/README.md) - Utilities to evaluate reconstruction error.
+- [SVD Encoder](../svd_encoder/README.md) - Custom binary encoder/decoder for saving compressed images as `.svd` files.
