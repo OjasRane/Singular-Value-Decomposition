@@ -18,6 +18,22 @@ with col1:
         if st.button("Try Now!", key="playground"):
             st.switch_page("pages/playground.py")
 
+with col2:
+    with st.container(border=True, height=300, key="compressor_container",horizontal=True, horizontal_alignment="center"):
+        st.markdown(r"<h2>Compressor</h2>", unsafe_allow_html=True)
+        st.text("Compress your image using singular value decomposition and download it.",
+                text_alignment="center")
+        if st.button("Try Now!", key="compressor_page"):
+            st.switch_page("pages/compressor.py")
+
+with st.container(border=True, height=210, key="image_viewer_container", horizontal_alignment="center"):
+    st.markdown(r"<h2>Image Viewer</h2>", unsafe_allow_html=True, text_alignment="center")
+    st.text("Upload a PNG, JPG, JPEG, or SVD file and view them in your browser!", text_alignment="center")
+    if st.button("View Images", key="image_viewer"):
+        st.switch_page("pages/image_viewer.py")
+
+col1, col2 = st.columns(2)
+with col1:
     with st.container(border=True, height=305, key="notebook_container",horizontal=True, horizontal_alignment="center"):
         st.markdown("<h2 align='center'>Check out the mathematics</h2>", unsafe_allow_html=True)
         st.text("Check my notebook about the working of SVD and its application to image compression.",
@@ -27,12 +43,6 @@ with col1:
                        icon=":material/import_contacts:")
 
 with col2:
-    with st.container(border=True, height=300, key="compressor_container",horizontal=True, horizontal_alignment="center"):
-        st.markdown(r"<h2>Compressor</h2>", unsafe_allow_html=True)
-        st.text("Compress your image using singular value decomposition and download it.",
-                text_alignment="center")
-        if st.button("Try Now!", key="compressor_page"):
-            st.switch_page("pages/compressor.py")
     with st.container(border=True, height=305, key="repo_container", horizontal=True, horizontal_alignment="center"):
         st.markdown(r"<h2 align='center'>GitHub Repository</h2>", unsafe_allow_html=True)
         st.text("Check out the GitHub repository for source code.", text_alignment="center")
