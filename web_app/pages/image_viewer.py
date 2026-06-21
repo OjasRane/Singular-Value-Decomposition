@@ -15,7 +15,10 @@ image = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg", "svd"])
 
 if image is not None:
    if image.type not in ["image/png", "image/jpg", "image/jpeg"]:
-      image, grayscale = read_svd(image)
+      try:
+         image, grayscale = read_svd(image)
+      except ValueError as e:
+         st.error(f"Wrong SVD file format: {e}", icon=":material/error:")
    else:
       image = np.array(cv.imdecode(np.frombuffer(image.read(), dtype=np.uint8), cv.IMREAD_COLOR), dtype=np.uint8)
       grayscale = False
