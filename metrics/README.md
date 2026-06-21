@@ -123,46 +123,57 @@ if energy >= 0.95:
 
 ### Compression Ratio Metrics
 
-#### `compression_ratio(image_shape, k)`
+#### `compression_ratio(image_shape, k, dtype=None)`
 Computes the compression ratio as the ratio of compressed data size to original data size.
 
 **Parameters:**
-- `image_shape`: Shape of the image/matrix (tuple, e.g., (height, width) for grayscale or (height, width, channels) for color)
-- `k`: Number of singular values retained
+- `image_shape` (tuple): Shape of the image/matrix (e.g., (height, width) for grayscale or (height, width, channels) for color)
+- `k` (int): Number of singular values retained
+- `dtype` (numpy.dtype, optional): Data type of the SVD matrices (e.g., `np.float32`, `np.float64`). If specified, multiplies the ratio by the element size in bytes (`itemsize`).
 
-**Returns:** Float representing the compression ratio (< 1 is good compression)
+**Returns:** Float representing the compression ratio.
 
-**Formula (for 2D):** $ \frac{k \cdot (m + n + 1)}{m \cdot n} $ where m, n are image dimensions
+**Formula (for 2D):** 
+- Without `dtype`: $ \frac{k \cdot (m + n + 1)}{m \cdot n} $
+- With `dtype`: $ \frac{k \cdot (m + n + 1)}{m \cdot n} \cdot \text{itemsize} $
 
-**Note:** The SVD representation requires storing U (m×k), S (k), and V^T (k×n), hence the k×(m+n+1) numerator.
+**Note:** The SVD representation requires storing U ($m \times k$), S ($k$), and $V^T$ ($k \times n$), hence the $k \times (m + n + 1)$ numerator.
 
 **Example:**
 ```python
+import numpy as np
 from metrics.metrics import compression_ratio
 
+# Unweighted compression ratio
 ratio = compression_ratio((256, 256), k=50)
-print(f"Compression ratio: {ratio:.4f}")  # 0.05 means 95% reduction
+
+# Weighted by float32 (4 bytes per element)
+ratio_float32 = compression_ratio((256, 256), k=50, dtype=np.float32)
 ```
 
 ---
 
-#### `percent_compression_ratio(image_shape, k)`
+#### `percent_compression_ratio(image_shape, k, dtype=None)`
 Computes the compression ratio as a percentage of the original data size.
 
 **Parameters:**
-- `image_shape`: Shape of the image/matrix (tuple)
-- `k`: Number of singular values retained
+- `image_shape` (tuple): Shape of the image/matrix.
+- `k` (int): Number of singular values retained
+- `dtype` (numpy.dtype, optional): Data type of the SVD matrices. If specified, multiplies the percentage by the element size in bytes (`itemsize`).
 
-**Returns:** Float representing the compression ratio as a percentage (lower is better)
+**Returns:** Float representing the compression ratio as a percentage (lower is better).
 
-**Formula (for 2D):** $ 100 \cdot \frac{k \cdot (m + n + 1)}{m \cdot n} $
+**Formula (for 2D):** 
+- Without `dtype`: $ 100 \cdot \frac{k \cdot (m + n + 1)}{m \cdot n} $
+- With `dtype`: $ 100 \cdot \frac{k \cdot (m + n + 1)}{m \cdot n} \cdot \text{itemsize} $
 
 **Example:**
 ```python
+import numpy as np
 from metrics.metrics import percent_compression_ratio
 
-percent = percent_compression_ratio((256, 256), k=50)
-print(f"Compressed to {percent:.2f}% of original size")
+percent = percent_compression_ratio((256, 256), k=50, dtype=np.float32)
+print(f"Compressed to {percent:.2f}% of original size (weighted by float32)")
 ```
 
 ---
@@ -225,3 +236,4 @@ print(f"Minimum k to retain {target_energy*100}% energy: {min_k}")
 - [Optimized SVD](../optimized_method/README.md) - Efficient SVD computation
 - [Mathematical Foundation](../mathematical_foundation/README.md) - SVD theory and implementation from scratch
 - [SVD Encoder](../svd_encoder/README.md) - Custom binary encoder/decoder for SVD-compressed images
+- [Web App](../web_app/README.md) - Streamlit interactive web application for image compression playground, compressor, and `.svd` viewer

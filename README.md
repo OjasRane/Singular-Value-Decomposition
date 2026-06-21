@@ -7,6 +7,7 @@ This repository demonstrates Singular Value Decomposition (SVD) applied to image
 - `mathematical_foundation/svd_from_scratch.py`: Implements SVD using linear algebra fundamentals and eigen-decomposition.
 - `optimized_method/optimized_svd.py`: Uses NumPy's optimized SVD routines to compute singular values and reconstruct compressed matrices.
 - `application/image_compression.py`: Provides image compression helpers, including support for grayscale and color images.
+- `svd_encoder/svd.py`: Implements the custom binary `.svd` file format encoder and decoder.
 - `metrics/metrics.py`: Contains reconstruction error and compression ratio utilities.
 - `analysis/understanding_svd_with_image_compression.ipynb`: A notebook for exploring SVD concepts and image compression behavior.<br>
 More detailed READMEs are provided in each directory.
@@ -38,6 +39,10 @@ Project directory structure (excluding paths ignored by `.gitignore`):
 │   ├── README.md
 │   ├── __init__.py
 │   └── optimized_svd.py
+├── svd_encoder/
+│   ├── README.md
+│   ├── __init__.py
+│   └── svd.py
 ├── web_app/
 │   ├── README.md
 │   ├── .streamlit/
@@ -45,6 +50,7 @@ Project directory structure (excluding paths ignored by `.gitignore`):
 │   ├── landing_page.py
 │   └── pages/
 │       ├── compressor.py
+│       ├── image_viewer.py
 │       └── playground.py
 ├── LICENSE
 ├── README.md
@@ -60,7 +66,8 @@ Project directory structure (excluding paths ignored by `.gitignore`):
 - `mathematical_foundation/`: Educational implementations of SVD.
 - `metrics/`: Functions for measuring compression quality.
 - `optimized_method/`: Performance-focused SVD reconstruction.
-- `web_app/`: Interactive web application for image compression with Streamlit pages for compression and playground features.
+- `svd_encoder/`: Custom binary format `.svd` encoder and decoder for SVD compressed image components.
+- `web_app/`: Interactive web application for SVD image compression, interactive playground, and custom image/`.svd` viewer.
 
 ## Dependencies:
 
@@ -139,6 +146,18 @@ from application.image_compression import get_k_from_compression_ratio
 k = get_k_from_compression_ratio(img.shape, compression_ratio=0.5)
 ```
 
+### Save and read custom `.svd` compressed files
+
+```python
+from svd_encoder.svd import export_svd, read_svd
+
+# Export image to a compressed .svd file (retaining 50 singular values)
+export_svd("path/to/image.jpg", "compressed.svd", k=50, grayscale=False)
+
+# Read and reconstruct back to a NumPy BGR image array
+img, is_grayscale = read_svd("compressed.svd")
+```
+
 
 ## Notes
 
@@ -160,5 +179,4 @@ k = get_k_from_compression_ratio(img.shape, compression_ratio=0.5)
 
 ## Future Scope
 
-- Create a custom file extension `.svd` to efficiently store images and display them when needed.
 - Add application of SVD to Principal Component Analysis (PCA)

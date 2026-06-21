@@ -4,12 +4,13 @@ A Streamlit-based interactive web application for exploring and experimenting wi
 
 ## Overview
 
-SVD Lab is an interactive platform that demonstrates how Singular Value Decomposition can be used to compress images with minimal quality loss. The application provides both a playground mode for experimentation and a compressor tool for practical image compression.
+SVD Lab is an interactive platform that demonstrates how Singular Value Decomposition can be used to compress images with minimal quality loss. The application provides a playground mode for experimentation, a compressor tool for practical image compression, and a built-in image viewer capable of loading standard images or reconstructing custom `.svd` files on the fly.
 
 ## Features
 
 - **Playground**: Interactive mode with a pre-loaded image to experiment with SVD compression parameters in real-time
 - **Compressor**: Upload your own images and compress them using SVD with adjustable compression parameters
+- **Image Viewer**: View standard images (PNG, JPG, JPEG) or custom `.svd` binary format files directly in the web browser
 - **Grayscale/Color Support**: Support for both grayscale and color image compression
 - **Interactive Visualization**: Real-time visualization of compressed images and metrics
 - **Educational Resources**: Links to detailed documentation and mathematical explanations
@@ -24,7 +25,8 @@ web_app/
 ├── landing_page.py          # Main landing page with navigation
 ├── pages/
 │   ├── compressor.py        # Image compression tool
-│   ├── playground.py        # Interactive playground mode
+│   ├── image_viewer.py      # Standard and .svd image viewer
+│   └── playground.py        # Interactive playground mode
 └── README.md
 ```
 
@@ -85,10 +87,11 @@ The application will open in your default web browser (typically http://localhos
 ## Pages Overview
 
 ### Landing Page (`landing_page.py`)
-The main entry point featuring four sections:
+The main entry point featuring navigation sections:
 
 - **Playground**: Jump into interactive SVD compression experiments
 - **Compressor**: Upload and compress your own images
+- **Image Viewer**: View standard images or custom SVD compressed files
 - **Documentation**: Link to the detailed mathematical explanation notebook
 - **GitHub**: Link to the project repository
 - **Connect**: Social media links
@@ -115,7 +118,7 @@ Practical tool for compressing your own images:
 - Grayscale/color toggle
 - `k` input prefilled using a default 0.25 compression-ratio estimate
 - Compressed image preview
-- Download options (PNG or JPEG format)
+- Download options (PNG, JPEG or SVD format)
 - Home button for navigation
 
 Usage:
@@ -124,6 +127,14 @@ Usage:
 3. Adjust the `k` parameter (higher = better quality, larger file)
 4. Verify the compressed result
 5. Download in your preferred format
+
+### Image Viewer (`pages/image_viewer.py`)
+Utility to view images directly in your browser:
+
+- Support for standard image files: PNG, JPG, JPEG
+- Support for custom `.svd` binary compressed files (uses the `svd_encoder` module to reconstruct and view on the fly)
+- Display size adjusted to fit content
+- Home button to return to landing page
 
 ## How SVD Image Compression Works
 
@@ -146,6 +157,7 @@ The web app depends on:
 From the parent project:
 - `application/image_compression.py`: Compression utilities
 - `metrics/metrics.py`: Quality metrics
+- `svd_encoder/svd.py`: SVD decoder for loading `.svd` compressed files
 
 ## Tips for Best Results
 
@@ -166,6 +178,7 @@ From the parent project:
 - [Application Module](../application/) - Image compression utilities
 - [Mathematical Foundation](../mathematical_foundation/) - SVD implementation details
 - [Analysis Notebook](../analysis/) - Educational notebook with detailed explanations
+- [SVD Encoder](../svd_encoder/) - Custom binary SVD encoder and decoder
 - [SVD Lab](https://svdlab.streamlit.app) - Live deployed app on Streamlit Community Cloud
 
 ## License

@@ -51,25 +51,26 @@ Compresses an image using the from-scratch SVD implementation.
 - For color images, compresses each BGR channel separately.
 - Clips pixel values to [0, 255] and converts to uint8 for color images.
 
-#### `get_k_from_compression_ratio(image_shape, compression_ratio, percentage=False)`
+#### `get_k_from_compression_ratio(image_shape, compression_ratio, dtype=np.uint8, percentage=False)`
 
 Calculates the number of singular values (k) needed to achieve a target compression ratio.
 
 **Parameters:**
 - `image_shape` (tuple): Shape of the image (height, width) or (height, width, channels).
 - `compression_ratio` (float): Target compression ratio.
+- `dtype` (numpy.dtype, optional): Data type of the SVD matrices (e.g., `np.uint8`, `np.float32`, `np.float64`). The formula divides by the itemsize of the dtype to adjust for storage constraints. Default is `np.uint8`.
 - `percentage` (bool, optional): If True, treats compression_ratio as a percentage (0-100). Default is False.
 
 **Returns:**
 - `k` (int): Number of singular values to use for the desired compression ratio.
 
 **Notes:**
-- The compression ratio is calculated based on the storage requirements of the SVD components.
+- The compression ratio is calculated based on the storage requirements of the SVD components, accounting for the data type size in bytes.
 - Formula used for calculating $k$:
 $$\begin{aligned}
-k=\text{Compression ratio}\times\frac{mn}{m+n+1}\quad&\text{Compression ratio}\in[0,1]\\
+k=\text{Compression ratio}\times\frac{mn}{(m+n+1)\times\text{itemsize}}\quad&\text{Compression ratio}\in[0,1]\\
 &\text{Image dimensions}=m\times n\\
-k=\frac{\text{Compression ratio}}{100}\times\frac{mn}{m+n+1}\quad&\text{Compression ratio}\in[0,100]\%\\
+k=\frac{\text{Compression ratio}}{100}\times\frac{mn}{(m+n+1)\times\text{itemsize}}\quad&\text{Compression ratio}\in[0,100]\%\\
 &\text{Image dimensions}=m\times n
 \end{aligned}$$
 
@@ -178,3 +179,4 @@ See the main project `requirements.txt` for full dependency list.
 - [Mathematical Foundation](../mathematical_foundation/README.md) - Core SVD theory and scratch implementation.
 - [Metrics Module](../metrics/README.md) - Utilities to evaluate reconstruction error.
 - [SVD Encoder](../svd_encoder/README.md) - Custom binary encoder/decoder for saving compressed images as `.svd` files.
+- [Web App](../web_app/README.md) - Streamlit interactive web application for image compression playground, compressor, and `.svd` viewer.

@@ -71,8 +71,8 @@ After completing this analysis, you should understand:
 This analysis complements the other components:
 
 - **Mathematical Foundation**: Provides theoretical background for the from-scratch implementation. Module used: `svd_from_scratch.py`.
-- **Application**: Demonstrates practical usage of the compression utilities. Module used: `image_compression.py`
-- **Metrics**: Uses evaluation functions to assess compression quality. Module used: `metrics`.
+- **Application**: Demonstrates practical usage of the compression utilities. Module used: `image_compression.py`.
+- **Metrics**: Uses evaluation functions to assess compression quality. Module used: `metrics.py`.
 - **Optimized Method**: Compares with high-performance implementations. Module used: `optimized_svd.py`.
 
 ## Contributing
