@@ -13,7 +13,7 @@ col1, col2 = st.columns(2)
 with col1:
     with st.container(border=True, height=300, key="playground_container",horizontal=True, horizontal_alignment="center"):
         st.markdown(r"<h2 align='center'>Playground</h2>", unsafe_allow_html=True)
-        st.text("Try out the image compression using singular value decomposition, without the need of providing an image and view instantly in interactive mode.",
+        st.text("Try out the image compression using singular value decomposition, without the need of providing an image and view instantly in interactive mode, and visualization of PCA using synthetic dataset.",
                 text_alignment="center")
         if st.button("Try Now!", key="playground"):
             st.switch_page("pages/playground.py")
@@ -34,16 +34,19 @@ with st.container(border=True, height=210, key="image_viewer_container", horizon
 
 col1, col2 = st.columns(2)
 with col1:
-    with st.container(border=True, height=305, key="notebook_container",horizontal=True, horizontal_alignment="center"):
+    with st.container(border=True, height=350, key="notebook_container",horizontal=True, horizontal_alignment="center"):
         st.markdown("<h2 align='center'>Check out the mathematics</h2>", unsafe_allow_html=True)
-        st.text("Check my notebook about the working of SVD and its application to image compression.",
+        st.text("Check my notebooks about working of SVD, its application to image compression and PCA.",
                 text_alignment="center")
-        st.link_button(label="Take me to Notebook",
+        st.link_button(label="SVD and its application to image compression notebook",
                        url="https://OjasRane.github.io/Singular-Value-Decomposition/understanding_svd_with_image_compression.html",
+                       icon=":material/import_contacts:")
+        st.link_button(label="Application of SVD to PCA notebook",
+                       url="https://OjasRane.github.io/Singular-Value-Decomposition/pca_using_svd.html",
                        icon=":material/import_contacts:")
 
 with col2:
-    with st.container(border=True, height=305, key="repo_container", horizontal=True, horizontal_alignment="center"):
+    with st.container(border=True, height=350, key="repo_container", horizontal=True, horizontal_alignment="center"):
         st.markdown(r"<h2 align='center'>GitHub Repository</h2>", unsafe_allow_html=True)
         st.text("Check out the GitHub repository for source code.", text_alignment="center")
         st.link_button(label="GitHub Repository", url="https://github.com/OjasRane/Singular-Value-Decomposition")

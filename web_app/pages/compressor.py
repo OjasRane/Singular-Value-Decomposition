@@ -29,7 +29,7 @@ if image is not None:
     needs_decompose = (
         "compressor" not in st.session_state or
         st.session_state.get("image_bytes") != image_bytes or
-        st.session_state["greyscale"] is not st.session_state["previous_greyscale"]
+        st.session_state["greyscale"] != st.session_state["previous_greyscale"]
     )
 
     if needs_decompose:
@@ -63,6 +63,9 @@ if image is not None:
         compressed_image = buffer.getvalue()
         st.markdown(
             r"**Note**: Viewing the image in SVD format is not supported by image viewers generally available, to view the file, upload it to [Image Viewer](./image_viewer/)")
+        st.markdown(
+            r"Also SVD compression is not much efficient as compared to JPEG or any any other modern compression algorithms."
+        )
 
     st.download_button("Download Compressed Image", file_name=f"SVD_Compression.{st.session_state['file_type']}",
                        data=compressed_image, on_click="ignore", icon=":material/download:", mime=f"image/{st.session_state['file_type']}" if st.session_state["file_type"] != "svd" else "application/octet-stream")
