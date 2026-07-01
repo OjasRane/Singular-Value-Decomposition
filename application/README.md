@@ -1,10 +1,11 @@
 # Application Directory
 
-This directory contains the core application utilities for image compression using Singular Value Decomposition (SVD). The main module, `image_compression.py`, provides high-level functions to compress both grayscale and color images using either the optimized NumPy-based SVD implementation or the from-scratch mathematical implementation.
+This directory contains the core application utilities for image compression and Principal Component Analysis (PCA) using Singular Value Decomposition (SVD).
 
 ## Files
 
 - `image_compression.py`: Main module with image compression functions.
+- `principal_component_analysis.py`: Module containing SVD-based Principal Component Analysis (PCA) implementation.
 - `README.md`: This documentation file.
 
 ## Module: image_compression.py
@@ -128,6 +129,81 @@ Reconstructs the image using the previously stored decomposition.
 
 **Performance Tip:** When building interactive applications (e.g., Streamlit sliders for selecting `k`), use `SVDCompressor` instead of repeatedly calling `optimized_compress()`. The decomposition is computed only once, and subsequent reconstructions are much faster.
 
+## Module: principal_component_analysis.py
+
+This module implements Principal Component Analysis (PCA) using Singular Value Decomposition. It decomposes a mean-centered data matrix to find directions of maximum variance and project the dataset into lower-dimensional space.
+
+### Class: `PCA`
+
+#### `PCA(n_components)`
+
+Creates a PCA object with the specified number of principal components.
+
+**Parameters:**
+- `n_components` (`int`): Number of principal components to retain. Must be a positive integer.
+
+**Raises:**
+- `ValueError`: If `n_components` is not a positive integer.
+
+---
+
+#### `fit(X)`
+
+Fits the PCA model using the dataset `X` by centering the data, computing the SVD, and extracting eigenvectors and singular values.
+
+**Parameters:**
+- `X` (`numpy.ndarray`): A 2D dataset array of shape `(n_samples, n_features)`.
+
+**Returns:**
+- `self`: Returns the fitted `PCA` instance.
+
+**Raises:**
+- `ValueError`: If `X` is not a 2D array, if the number of samples is less than 2, or if `n_components` exceeds the maximum possible rank.
+
+---
+
+#### `fit_transform(X)`
+
+Fits the model using `X` and returns the lower-dimensional projection.
+
+**Parameters:**
+- `X` (`numpy.ndarray`): A 2D dataset array of shape `(n_samples, n_features)`.
+
+**Returns:**
+- `X_transformed` (`numpy.ndarray`): Lower-dimensional projection array of shape `(n_samples, n_components)`.
+
+---
+
+#### `transform(X)`
+
+Transforms new data points into the fitted lower-dimensional representation.
+
+**Parameters:**
+- `X` (`numpy.ndarray`): A 2D dataset array of shape `(samples, n_features)`.
+
+**Returns:**
+- `X_transformed` (`numpy.ndarray`): Projected representation of shape `(samples, n_components)`.
+
+**Raises:**
+- `RuntimeError`: If called before fitting the model.
+- `ValueError`: If input shape or feature dimensions are incorrect.
+
+---
+
+#### `inverse_transform(X)`
+
+Reconstructs the original high-dimensional representation of lower-dimensional coordinates.
+
+**Parameters:**
+- `X` (`numpy.ndarray`): Projected coordinates of shape `(samples, n_components)`.
+
+**Returns:**
+- `X_reconstructed` (`numpy.ndarray`): Reconstructed array of shape `(samples, n_features)`.
+
+**Raises:**
+- `RuntimeError`: If called before fitting the model.
+- `ValueError`: If input shape or component dimensions are incorrect.
+
 ## Usage Examples
 
 ```python
@@ -162,6 +238,24 @@ compressor.decompose()
 compressed_50 = compressor.reconstruct(k=50)
 compressed_100 = compressor.reconstruct(k=100)
 compressed_150 = compressor.reconstruct(k=150)
+
+# --- PCA Example ---
+from principal_component_analysis import PCA
+
+# Create synthetic 2D data (100 samples, 2 features)
+X_data = np.random.randn(100, 2)
+
+# Keep 1 component
+pca_model = PCA(n_components=1)
+
+# Fit PCA and project dataset to 1D
+X_reduced = pca_model.fit_transform(X_data)
+
+# Reconstruct 1D projection back to 2D
+X_reconstructed = pca_model.inverse_transform(X_reduced)
+
+# Check explained variance ratios
+print("Explained Variance Ratios:", pca_model.explained_variance_ratio)
 ```
 
 ## Dependencies

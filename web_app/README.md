@@ -1,20 +1,20 @@
 # SVD Lab - Web Application
 
-A Streamlit-based interactive web application for exploring and experimenting with Singular Value Decomposition (SVD) applied to image compression.
+A Streamlit-based interactive web application for exploring and experimenting with Singular Value Decomposition (SVD) applied to image compression and Principal Component Analysis (PCA).
 
 ## Overview
 
-SVD Lab is an interactive platform that demonstrates how Singular Value Decomposition can be used to compress images with minimal quality loss. The application provides a playground mode for experimentation, a compressor tool for practical image compression, and a built-in image viewer capable of loading standard images or reconstructing custom `.svd` files on the fly.
+SVD Lab is an interactive platform that demonstrates how Singular Value Decomposition can be used to compress images with minimal quality loss, and visualizes how SVD is applied to project and reconstruct datasets using PCA. The application provides a playground mode for both image compression and PCA experimentation, a compressor tool for practical image compression, and a built-in image viewer capable of loading standard images or reconstructing custom `.svd` files on the fly.
 
 ## Features
 
-- **Playground**: Interactive mode with a pre-loaded image to experiment with SVD compression parameters in real-time
+- **Playground**: Interactive modes to experiment with SVD image compression parameters in real-time, and visualize Principal Component Analysis (PCA) projection axes using synthetic datasets
 - **Compressor**: Upload your own images and compress them using SVD with adjustable compression parameters
 - **Image Viewer**: View standard images (PNG, JPG, JPEG) or custom `.svd` binary format files directly in the web browser
 - **Grayscale/Color Support**: Support for both grayscale and color image compression
 - **Interactive Visualization**: Real-time visualization of compressed images and metrics
 - **Educational Resources**: Links to detailed documentation and mathematical explanations
-- **Download Capability**: Download compressed images in PNG or JPEG format
+- **Download Capability**: Download compressed images in PNG, JPEG, or custom `.svd` format
 
 ## Project Structure
 
@@ -78,7 +78,7 @@ uv run streamlit run web_app/landing_page.py    # For MacOS/Linux
 ```
 ### Using pip:
 ```bash
-streamlit run web_app\Landing_page.py           # For Windows
+streamlit run web_app\landing_page.py           # For Windows
 streamlit run web_app/landing_page.py           # For MacOS/Linux
 ```
 
@@ -97,19 +97,25 @@ The main entry point featuring navigation sections:
 - **Connect**: Social media links
 
 ### Playground (`pages/playground.py`)
-Interactive mode for experimenting with SVD compression:
+Interactive mode supporting two choices of application:
 
-- Pre-loaded sample image for quick testing
-- Toggle between grayscale and color modes
-- Adjustable compression parameter (`k`) using a slider
-- Real-time visualization of compressed results
-- Metrics display (compression ratio, reconstruction error)
-- Home button to return to landing page
+#### 1. Image Compression
+- Pre-loaded sample image for quick testing.
+- Toggle between grayscale and color modes.
+- Adjustable compression parameter (`k`) using a slider.
+- Real-time visualization of compressed results.
+- Interactive plots for reconstruction error and energy retained.
+- Home button to return to landing page.
+
+#### 2. Principal Component Analysis
+- Generate a custom synthetic 2D normal distribution dataset by controlling the random seed, number of samples, X/Y axes scaling, and rotation angle.
+- Select from three visual plots: Original Dataset, Original Dataset with Principal Axes, and Data points projected on Principal Axes.
+- Control the number of projection dashed lines to visualize the orthogonal distance to the principal axes.
 
 Features:
-- Cached SVD computation for performance
-- Interactive controls for parameter tuning
-- Visual feedback on compression quality
+- Cached calculations for performance.
+- Interactive controls for real-time parameter tuning.
+- Visual feedback on compression quality and PCA projections.
 
 ### Compressor (`pages/compressor.py`)
 Practical tool for compressing your own images:
@@ -126,7 +132,7 @@ Usage:
 2. Choose grayscale or color mode
 3. Adjust the `k` parameter (higher = better quality, larger file)
 4. Verify the compressed result
-5. Download in your preferred format
+5. Download in your preferred format (PNG, JPEG, or custom `.svd` format)
 
 ### Image Viewer (`pages/image_viewer.py`)
 Utility to view images directly in your browser:
@@ -140,9 +146,13 @@ Utility to view images directly in your browser:
 
 SVD decomposes an image matrix into three matrices: $U$, $\Sigma$, and $V^{T}$. By keeping only the top-k singular values and their corresponding vectors, we reduce the data needed to represent the image while preserving visual quality.
 
-For detailed mathematical explanations, see:
-- [analysis/understanding_svd_with_image_compression.ipynb](../analysis/understanding_svd_with_image_compression.ipynb)
-- Or visit the notebook link in the application
+For detailed mathematical explanations, see [analysis/understanding_svd_with_image_compression.ipynb](../analysis/understanding_svd_with_image_compression.ipynb).
+
+## How SVD is Applied to Principal Component Analysis (PCA)
+
+PCA identifies principal component directions (axes of maximum variance) by centering the input dataset and computing its SVD: $X - \mu = U \Sigma V^T$. The columns of $V$ represent the principal components (axes), and singular values in $\Sigma$ directly determine the explained variance ratio along each axis.
+
+For detailed mathematical explanations, see [analysis/pca_using_svd.ipynb](../analysis/pca_using_svd.ipynb).
 
 ## Dependencies
 
@@ -156,6 +166,7 @@ The web app depends on:
 
 From the parent project:
 - `application/image_compression.py`: Compression utilities
+- `application/principal_component_analysis.py`: PCA implementation utilities
 - `metrics/metrics.py`: Quality metrics
 - `svd_encoder/svd.py`: SVD decoder for loading `.svd` compressed files
 
@@ -164,7 +175,7 @@ From the parent project:
 - **Playground**: Start with low k values and gradually increase to see compression effects
 - **Compressor**: Use the 0.25 (25%) default compression ratio for a good balance
 - **Color Images**: Color compression will produce larger files than grayscale (3 channels)
-- **File Formats**: For best compression analysis, download as PNG to avoid JPEG re-compression
+- **File Formats**: For best compression analysis, download as PNG or custom `.svd` format (lossless in SVD terms) to avoid lossy JPEG re-compression
 
 ## Troubleshooting
 
@@ -175,9 +186,9 @@ From the parent project:
 ## Related Resources
 
 - [Project README](../README.md) - Overall project documentation
-- [Application Module](../application/) - Image compression utilities
+- [Application Module](../application/) - Image compression and PCA utilities
 - [Mathematical Foundation](../mathematical_foundation/) - SVD implementation details
-- [Analysis Notebook](../analysis/) - Educational notebook with detailed explanations
+- [Analysis Notebooks](../analysis/) - Educational notebooks with detailed explanations for SVD compression and PCA
 - [SVD Encoder](../svd_encoder/) - Custom binary SVD encoder and decoder
 - [SVD Lab](https://svdlab.streamlit.app) - Live deployed app on Streamlit Community Cloud
 

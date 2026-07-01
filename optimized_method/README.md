@@ -37,5 +37,5 @@ This module is intended to provide a practical SVD path in this project by lever
 ## See Also
 
 - [Mathematical Foundation](../mathematical_foundation/README.md) - Theoretical background and scratch SVD implementation.
-- [Application Directory](../application/README.md) - High-level SVD image compression routines.
+- [Application Directory](../application/README.md) - High-level SVD image compression and PCA routines.
 - [SVD Encoder](../svd_encoder/README.md) - Custom binary encoder/decoder for saving compressed images as `.svd` files.

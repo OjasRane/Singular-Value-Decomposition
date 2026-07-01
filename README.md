@@ -1,15 +1,17 @@
 # Singular Value Decomposition
 
-This repository demonstrates Singular Value Decomposition (SVD) applied to image compression. It includes both a from-scratch SVD implementation and an optimized NumPy-based method, plus utilities to compress images and evaluate reconstruction quality.
+This repository demonstrates Singular Value Decomposition (SVD) applied to image compression and Principal Component Analysis (PCA). It includes both a from-scratch SVD implementation and an optimized NumPy-based method, plus utilities to compress images, perform PCA, and evaluate reconstruction quality.
 
 ## Project Overview
 
 - `mathematical_foundation/svd_from_scratch.py`: Implements SVD using linear algebra fundamentals and eigen-decomposition.
 - `optimized_method/optimized_svd.py`: Uses NumPy's optimized SVD routines to compute singular values and reconstruct compressed matrices.
 - `application/image_compression.py`: Provides image compression helpers, including support for grayscale and color images.
+- `application/principal_component_analysis.py`: Implements Principal Component Analysis (PCA) utilizing SVD.
 - `svd_encoder/svd.py`: Implements the custom binary `.svd` file format encoder and decoder.
 - `metrics/metrics.py`: Contains reconstruction error and compression ratio utilities.
-- `analysis/understanding_svd_with_image_compression.ipynb`: A notebook for exploring SVD concepts and image compression behavior.<br>
+- `analysis/understanding_svd_with_image_compression.ipynb`: A notebook for exploring SVD concepts and image compression behavior.
+- `analysis/pca_using_svd.ipynb`: A notebook demonstrating SVD application to Principal Component Analysis (PCA).<br>
 More detailed READMEs are provided in each directory.
 
 ## Repository Structure
@@ -20,11 +22,13 @@ Project directory structure (excluding paths ignored by `.gitignore`):
 ├── .python-version
 ├── analysis/
 │   ├── README.md
+│   ├── pca_using_svd.ipynb
 │   └── understanding_svd_with_image_compression.ipynb
 ├── application/
 │   ├── README.md
 │   ├── __init__.py
-│   └── image_compression.py
+│   ├── image_compression.py
+│   └── principal_component_analysis.py
 ├── data/
 │   └── image.png
 ├── mathematical_foundation/
@@ -60,14 +64,14 @@ Project directory structure (excluding paths ignored by `.gitignore`):
 └── .gitignore
 ```
 
-- `analysis/`: Jupyter notebook and experimental analysis files.
-- `application/`: Image compression utilities and high-level helpers.
+- `analysis/`: Jupyter notebooks demonstrating SVD application to image compression and PCA.
+- `application/`: Image compression and Principal Component Analysis (PCA) utilities.
 - `data/`: Input/output data files and test images.
 - `mathematical_foundation/`: Educational implementations of SVD.
 - `metrics/`: Functions for measuring compression quality.
 - `optimized_method/`: Performance-focused SVD reconstruction.
 - `svd_encoder/`: Custom binary format `.svd` encoder and decoder for SVD compressed image components.
-- `web_app/`: Interactive web application for SVD image compression, interactive playground, and custom image/`.svd` viewer.
+- `web_app/`: Interactive web application for SVD image compression, PCA playground/visualizations, and custom image/`.svd` viewer.
 
 ## Dependencies:
 
@@ -158,6 +162,25 @@ export_svd("path/to/image.jpg", "compressed.svd", k=50, grayscale=False)
 img, is_grayscale = read_svd("compressed.svd")
 ```
 
+### Perform Principal Component Analysis (PCA) via SVD
+
+```python
+import numpy as np
+from application.principal_component_analysis import PCA
+
+# Generate some synthetic 2D data
+X = np.random.randn(100, 2)
+
+# Instantiate PCA to retain 1 component
+pca = PCA(n_components=1)
+
+# Fit and transform the dataset
+X_reduced = pca.fit_transform(X)
+
+# Reconstruct the original dataset from reduced components
+X_reconstructed = pca.inverse_transform(X_reduced)
+```
+
 
 ## Notes
 
@@ -176,7 +199,3 @@ img, is_grayscale = read_svd("compressed.svd")
 [GitHub Pages](https://ojasrane.github.io/Singular-Value-Decomposition)
 
 [SVD Lab](https://svdlab.streamlit.app)
-
-## Future Scope
-
-- Add application of SVD to Principal Component Analysis (PCA)

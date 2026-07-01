@@ -125,6 +125,7 @@ See the main project `requirements.txt` for the full dependency list.
 ## See Also
 
 - [Optimized SVD](../optimized_method/README.md) - Leveraged to perform the SVD computations.
-- [Application Directory](../application/README.md) - High-level SVD compression routines.
+- [Application Directory](../application/README.md) - High-level SVD compression and PCA routines.
 - [Metrics Module](../metrics/README.md) - Utilities to evaluate reconstruction error and compression efficiency.
 - [Mathematical Foundation](../mathematical_foundation/README.md) - Learn how SVD works under the hood.
+- [Web App](../web_app/README.md) - Streamlit interactive web application for image compression playground, compressor, and `.svd` viewer.
