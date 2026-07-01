@@ -2,7 +2,7 @@
 
 These GitHub pages are made for explaination of the mathematics of repository [Singular-Value-Decomposition](https://github.com/OjasRane/Singular-Value-Decomposition).
 
-Check out my notebook on [Understanding SVD with image compression](https://OjasRane.github.io/Singular-Value-Decomposition/understanding_svd_with_image_compression.html)
+Check out my notebook on [Understanding SVD with image compression](understanding_svd_with_image_compression.html) and [Principal Component Analysis using SVD](pca_using_svd.html)
 
 Explore the project at [SVD Lab](https://svdlab.streamlit.app)
 
