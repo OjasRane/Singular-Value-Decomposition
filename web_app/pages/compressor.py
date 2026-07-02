@@ -57,14 +57,14 @@ if image is not None:
         compressed_image = Image.fromarray(compressed_image)
         compressed_image.save(buffer, format=str(st.session_state["file_type"]).upper())
         compressed_image = buffer.getvalue()
-        st.markdown(r"**Note**: SVD compression reduces the matrix representation size, not necessarily the size of PNG/JPEG files. Saving the reconstructed image as PNG or JPEG may produce files that are similar in size or even larger than the original image.")
+        st.markdown(r"**Note**: SVD compression reduces the matrix representation size, not necessarily the size of PNG/JPEG files. Saving the reconstructed image as PNG may produce files that are similar in size or even larger than the original image, but saving reconstructed image as JPEG will produce file smaller in size due to its own compression algorithm.")
     else:
         st.session_state["compressor"].export_svd(buffer)
         compressed_image = buffer.getvalue()
         st.markdown(
             r"**Note**: Viewing the image in SVD format is not supported by image viewers generally available, to view the file, upload it to [Image Viewer](./image_viewer/)")
         st.markdown(
-            r"Also SVD compression is not much efficient as compared to JPEG or any any other modern compression algorithms."
+            r"SVD compression is significantly less efficient than JPEG or other modern compression algorithms."
         )
 
     st.download_button("Download Compressed Image", file_name=f"SVD_Compression.{st.session_state['file_type']}",
