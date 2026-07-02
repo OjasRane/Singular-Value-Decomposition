@@ -2,7 +2,7 @@ import streamlit as st
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
-from application import image_compression
+from optimized_method.optimized_svd import reconstruct
 from metrics import metrics
 from application.image_compression import get_k_from_compression_ratio
 from application.principal_component_analysis import PCA
@@ -21,18 +21,10 @@ if st.session_state["application_choice"] == "Image Compression":
     else:
         image = cv.imread(r"data/image.png")
 
-    if "previous_grayscale" not in st.session_state:
-        st.session_state["previous_grayscale"] = not st.session_state["grayscale"]
-
     k = min(image.shape[:2])
 
     if "k" not in st.session_state:
         st.session_state["k"] = k
-
-    if st.session_state["previous_grayscale"] != st.session_state["grayscale"]:
-        st.session_state["compressor_playground"] = image_compression.SVDCompressor(image)
-        st.session_state["compressor_playground"].decompose()
-        st.session_state["previous_grayscale"] = st.session_state["grayscale"]
 
     col1, col2 = st.columns(2)
 
@@ -47,11 +39,34 @@ if st.session_state["application_choice"] == "Image Compression":
 
     with col2:
         if st.session_state["grayscale"]:
-            compressed_image = st.session_state["compressor_playground"].reconstruct(st.session_state["k"])
+            if "U" not in st.session_state or "S" not in st.session_state or "Vt" not in st.session_state:
+                grayscale = np.load("./web_app/assets/grayscale.npz")
+                st.session_state["U"] = grayscale["U"]
+                st.session_state["S"] = grayscale["S"]
+                st.session_state["Vt"] = grayscale["Vt"]
+            compressed_image = np.clip(reconstruct(st.session_state["U"], st.session_state["S"], st.session_state["Vt"], k=st.session_state["k"]), 0, 255).astype("uint8")
             st.image(compressed_image, caption=f"""Reconstructed Image
                                                    \nCompression Ratio={np.round(metrics.compression_ratio(image.shape, st.session_state['k']), 2)}""")
         else:
-            compressed_image = st.session_state["compressor_playground"].reconstruct(st.session_state["k"])
+            if "U_B" not in st.session_state or "S_B" not in st.session_state or "Vt_B" not in st.session_state or "U_G" not in st.session_state or "S_G" not in st.session_state or "Vt_G" not in st.session_state or "U_R" not in st.session_state or "S_R" not in st.session_state or "Vt_R" not in st.session_state:
+                color = np.load("./web_app/assets/color.npz")
+                st.session_state["U_B"] = color["U_B"]
+                st.session_state["S_B"] = color["S_B"]
+                st.session_state["Vt_B"] = color["Vt_B"]
+                st.session_state["U_G"] = color["U_G"]
+                st.session_state["S_G"] = color["S_G"]
+                st.session_state["Vt_G"] = color["Vt_G"]
+                st.session_state["U_R"] = color["U_R"]
+                st.session_state["S_R"] = color["S_R"]
+                st.session_state["Vt_R"] = color["Vt_R"]
+
+            compressed_image = cv.merge(
+                [
+                    np.clip(reconstruct(st.session_state["U_B"], st.session_state["S_B"], st.session_state["Vt_B"], k=st.session_state["k"]), 0, 255).astype("uint8"),
+                    np.clip(reconstruct(st.session_state["U_G"], st.session_state["S_G"], st.session_state["Vt_G"], k=st.session_state["k"]), 0, 255).astype("uint8"),
+                    np.clip(reconstruct(st.session_state["U_R"], st.session_state["S_R"], st.session_state["Vt_R"], k=st.session_state["k"]), 0, 255).astype("uint8"),
+                ]
+            )
             st.image(compressed_image, caption=f"""Reconstructed Image
                                                            \nCompression Ratio={np.round(metrics.compression_ratio(image.shape, st.session_state['k']), 2)}""",
                      channels="BGR")
@@ -63,7 +78,6 @@ if st.session_state["application_choice"] == "Image Compression":
     st.slider("k", min_value=1, max_value=k, value=k, key="k")
 
     kx = np.arange(1, st.session_state["k"]+1)
-    fig, ax = plt.subplots()
     st.pills("Select the plot to view it",
              ["Reconstruction Error", "Energy Retained"],
              default="Reconstruction Error",
@@ -74,31 +88,36 @@ if st.session_state["application_choice"] == "Image Compression":
         error = np.empty(st.session_state["k"])
         if image.ndim == 2:
             for i in kx:
-                error[i-1] = metrics.reconstruction_error(st.session_state["compressor_playground"].decomposed_image[1], i)
+                error[i-1] = metrics.reconstruction_error(st.session_state["S"], i)
         else:
             for i in kx:
-                error[i-1] = np.sqrt(metrics.reconstruction_error_squared(st.session_state["compressor_playground"].decomposed_B[1], i) +
-                                     metrics.reconstruction_error_squared(st.session_state["compressor_playground"].decomposed_G[1], i) +
-                                     metrics.reconstruction_error_squared(st.session_state["compressor_playground"].decomposed_R[1], i))
+                error[i-1] = np.sqrt(metrics.reconstruction_error_squared(st.session_state["S_B"], i) +
+                                     metrics.reconstruction_error_squared(st.session_state["S_G"], i) +
+                                     metrics.reconstruction_error_squared(st.session_state["S_R"], i))
 
+        st.markdown(r"""
+                        $$
+                        \text{Reconstruction Error}=\sqrt{\sum_{i=k}^{\min{(m,n)}}{\sigma_{i}^{2}}}
+                        $$
+                        """, text_alignment="center")
+
+        fig, ax = plt.subplots()
         ax.plot(kx, error)
         ax.set(xlabel="k", ylabel="Reconstruction Error", title="Reconstruction Error")
         ax.hlines(y=error[st.session_state["k"] - 1], xmin=0, xmax=st.session_state["k"], linestyle="--", colors="black")
         ax.plot(st.session_state["k"], error[st.session_state["k"] - 1], ".", color="black")
+        ax.grid(True)
+        st.pyplot(fig)
+        plt.close(fig)
 
-        st.markdown(r"""
-                $$
-                \text{Reconstruction Error}=\sqrt{\sum_{i=k}^{\min{(m,n)}}{\sigma_{i}^{2}}}
-                $$
-                """, text_alignment="center")
     else:
         energy_retained = np.empty(st.session_state["k"])
         if image.ndim == 2:
             for i in kx:
-                energy_retained[i-1] = metrics.energy_retained(st.session_state["compressor_playground"].decomposed_image[1], i)
+                energy_retained[i-1] = metrics.energy_retained(st.session_state["S"], i)
         else:
             for i in kx:
-                energy_retained[i-1] = (np.sum(st.session_state["compressor_playground"].decomposed_B[1][:i]**2 + st.session_state["compressor_playground"].decomposed_G[1][:i]**2 + st.session_state["compressor_playground"].decomposed_R[1][:i]**2)) / (np.sum(st.session_state["compressor_playground"].decomposed_B[1]**2 + st.session_state["compressor_playground"].decomposed_G[1]**2 + st.session_state["compressor_playground"].decomposed_R[1]**2))
+                energy_retained[i-1] = (np.sum(st.session_state["S_B"][:i]**2 + st.session_state["S_G"][:i]**2 + st.session_state["S_R"][:i]**2)) / (np.sum(st.session_state["S_B"]**2 + st.session_state["S_G"]**2 + st.session_state["S_R"]**2))
 
         st.markdown(r"""
         $$
@@ -106,14 +125,15 @@ if st.session_state["application_choice"] == "Image Compression":
         $$
         """, text_alignment="center")
 
+        fig, ax = plt.subplots()
         ax.hlines(y=energy_retained[st.session_state["k"] - 1], xmin=0, xmax=st.session_state["k"], linestyle="--", colors="black")
         ax.plot(kx, energy_retained)
         ax.set(xlabel="k", ylabel="Energy Retained", title="Energy Retained")
 
         ax.plot(st.session_state["k"], energy_retained[st.session_state["k"] - 1], ".", color="black")
-
-    ax.grid(True)
-    st.pyplot(fig)
+        ax.grid(True)
+        st.pyplot(fig)
+        plt.close(fig)
 
 elif st.session_state["application_choice"] == "Principal Component Analysis":
     st.number_input("Enter a seed number",min_value=1, value=42, key="seed")
@@ -159,15 +179,16 @@ elif st.session_state["application_choice"] == "Principal Component Analysis":
 
     if st.session_state["plot_choice"] == "Original Dataset":
         fig, ax = plt.subplots()
-        ax.scatter(X[:, 0], X[:, 1], label="Data")
-        ax.scatter(mean[0], mean[1], label="Mean", color="black")
+        ax.scatter(X[:, 0], X[:, 1], marker=".", label="Data")
+        ax.scatter(mean[0], mean[1], marker=".", label="Mean", color="black")
         ax.legend(loc="upper right")
         ax.axis("equal")
         st.pyplot(fig)
+        plt.close(fig)
     elif st.session_state["plot_choice"] == "Original Dataset with Principal Axes":
         fig, ax = plt.subplots()
-        ax.scatter(X[:, 0], X[:, 1], label="Data")
-        ax.scatter(mean[0], mean[1], label="Mean", color="black")
+        ax.scatter(X[:, 0], X[:, 1], marker=".", label="Data")
+        ax.scatter(mean[0], mean[1], marker=".", label="Mean", color="black")
         ax.plot(p[0, :, 0], p[0, :, 1], label=r"$\text{PC}1$", color="red")
         ax.plot(p[1, :, 0], p[1, :, 1], label=r"$\text{PC}2$", color="green")
         rng_projection = np.random.default_rng()
@@ -179,15 +200,17 @@ elif st.session_state["application_choice"] == "Principal Component Analysis":
         ax.legend(loc="upper right")
         ax.axis("equal")
         st.pyplot(fig)
+        plt.close(fig)
     elif st.session_state["plot_choice"] == "Data points projected on Principal Axes":
         fig, ax = plt.subplots()
         ax.plot(p[0, :, 0], p[0, :, 1], label=r"$\text{PC}1$", color="red")
         ax.plot(p[1, :, 0], p[1, :, 1], label=r"$\text{PC}2$", color="green")
-        ax.scatter(pc1_projection[:, 0], pc1_projection[:, 1], label=r"$\text{PC}1$", color="red")
-        ax.scatter(pc2_projection[:, 0], pc2_projection[:, 1], label=r"$\text{PC}2$", color="green")
+        ax.scatter(pc1_projection[:, 0], pc1_projection[:, 1], marker=".", label=r"$\text{PC}1$", color="red")
+        ax.scatter(pc2_projection[:, 0], pc2_projection[:, 1], marker=".", label=r"$\text{PC}2$", color="green")
         ax.legend(loc="upper right")
         ax.axis("equal")
         st.pyplot(fig)
+        plt.close(fig)
 
 if st.button("Home", icon=":material/home:"):
    st.switch_page(r"landing_page.py")
