@@ -16,10 +16,21 @@ st.pills(label="Select Playground", options=["Image Compression", "Principal Com
          default="Image Compression", required=True, label_visibility="collapsed")
 
 if st.session_state["application_choice"] == "Image Compression":
+    @st.cache_resource
+    def load_files(grayscale):
+        if grayscale:
+            return np.load("./web_app/assets/grayscale.npz")
+        else:
+            return np.load("./web_app/assets/color.npz")
+
     if st.checkbox("Grayscale", value=True, key="grayscale"):
         image = cv.imread(r"data/image.png", cv.IMREAD_GRAYSCALE)
     else:
         image = cv.imread(r"data/image.png")
+
+    if image is None:
+        st.error("Failed to load image")
+        st.stop()
 
     k = min(image.shape[:2])
 
@@ -40,7 +51,7 @@ if st.session_state["application_choice"] == "Image Compression":
     with col2:
         if st.session_state["grayscale"]:
             if "U" not in st.session_state or "S" not in st.session_state or "Vt" not in st.session_state:
-                grayscale = np.load("./web_app/assets/grayscale.npz")
+                grayscale = load_files(grayscale=True)
                 st.session_state["U"] = grayscale["U"]
                 st.session_state["S"] = grayscale["S"]
                 st.session_state["Vt"] = grayscale["Vt"]
@@ -48,17 +59,15 @@ if st.session_state["application_choice"] == "Image Compression":
             st.image(compressed_image, caption=f"""Reconstructed Image
                                                    \nCompression Ratio={np.round(metrics.compression_ratio(image.shape, st.session_state['k']), 2)}""")
         else:
-            if "U_B" not in st.session_state or "S_B" not in st.session_state or "Vt_B" not in st.session_state or "U_G" not in st.session_state or "S_G" not in st.session_state or "Vt_G" not in st.session_state or "U_R" not in st.session_state or "S_R" not in st.session_state or "Vt_R" not in st.session_state:
-                color = np.load("./web_app/assets/color.npz")
-                st.session_state["U_B"] = color["U_B"]
-                st.session_state["S_B"] = color["S_B"]
-                st.session_state["Vt_B"] = color["Vt_B"]
-                st.session_state["U_G"] = color["U_G"]
-                st.session_state["S_G"] = color["S_G"]
-                st.session_state["Vt_G"] = color["Vt_G"]
-                st.session_state["U_R"] = color["U_R"]
-                st.session_state["S_R"] = color["S_R"]
-                st.session_state["Vt_R"] = color["Vt_R"]
+            decompositions = [
+                "U_B", "S_B", "Vt_B",
+                "U_G", "S_G", "Vt_G",
+                "U_R", "S_R", "Vt_R"
+            ]
+            if any(i not in st.session_state for i in decompositions):
+                color = load_files(grayscale=False)
+                for i in decompositions:
+                    st.session_state[i] = color[i]
 
             compressed_image = cv.merge(
                 [
