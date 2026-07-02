@@ -12,8 +12,8 @@ st.set_page_config(
     page_icon=":material/grid_4x4:"
 )
 st.title("Playground", text_alignment="center")
-st.pills(label="", options=["Image Compression", "Principal Component Analysis"], key="application_choice",
-         default="Image Compression", required=True)
+st.pills(label="Select Playground", options=["Image Compression", "Principal Component Analysis"], key="application_choice",
+         default="Image Compression", required=True, label_visibility="collapsed")
 
 if st.session_state["application_choice"] == "Image Compression":
     if st.checkbox("Grayscale", value=True, key="grayscale"):
