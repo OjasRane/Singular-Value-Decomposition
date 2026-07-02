@@ -22,6 +22,9 @@ SVD Lab is an interactive platform that demonstrates how Singular Value Decompos
 web_app/
 ├── .streamlit/
 │   └── config.toml         # Streamlit configuration
+├── assets/
+│   ├── color.npz           # Pre-computed SVD components for color playground image
+│   └── grayscale.npz       # Pre-computed SVD components for grayscale playground image
 ├── landing_page.py          # Main landing page with navigation
 ├── pages/
 │   ├── compressor.py        # Image compression tool
@@ -113,7 +116,7 @@ Interactive mode supporting two choices of application:
 - Control the number of projection dashed lines to visualize the orthogonal distance to the principal axes.
 
 Features:
-- Cached calculations for performance.
+- Loads pre-computed SVD assets ([color.npz](file:///home/ojas/Python-Projects/Singular-Value-Decomposition/web_app/assets/color.npz) and [grayscale.npz](file:///home/ojas/Python-Projects/Singular-Value-Decomposition/web_app/assets/grayscale.npz)) for the sample image, avoiding SVD recalculations on every page rerun/reload.
 - Interactive controls for real-time parameter tuning.
 - Visual feedback on compression quality and PCA projections.
 

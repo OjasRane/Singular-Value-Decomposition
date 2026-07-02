@@ -51,6 +51,9 @@ Project directory structure (excluding paths ignored by `.gitignore`):
 │   ├── README.md
 │   ├── .streamlit/
 │   │   └── config.toml
+│   ├── assets/
+│   │   ├── color.npz
+│   │   └── grayscale.npz
 │   ├── landing_page.py
 │   └── pages/
 │       ├── compressor.py
