@@ -1,6 +1,5 @@
 import numpy as np
 import cv2 as cv
-from matplotlib import pyplot as plt
 
 from optimized_method import optimized_svd
 from utils import read_data
