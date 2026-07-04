@@ -2,6 +2,10 @@
 
 This directory contains the SVD encoding and decoding module, which implements a custom binary file format (`.svd`) to efficiently store and reconstruct compressed images using Singular Value Decomposition.
 
+## Need for a custom binary file format `.svd`
+
+Reconstructing a rank-k approximation and saving it as a PNG or JPEG defeats the purpose of SVD compression, those formats compress based on pixel-level redundancy, not the low-rank structure that made the compression possible in the first place. The real saving comes from storing only the truncated matrices $U,\Sigma,V^{T}$ directly. I built a custom binary format (`.svd`) to encode and decode these matrices myself, mainly to learn low-level binary file I/O; struct packing, header design, and reading/writing raw arrays; rather than relying on `.npz`.
+
 ## Files
 
 - `svd.py`: Core module containing functions for exporting images to the custom `.svd` binary format and reading/reconstructing them.
