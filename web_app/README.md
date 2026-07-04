@@ -23,8 +23,8 @@ web_app/
 ├── .streamlit/
 │   └── config.toml         # Streamlit configuration
 ├── assets/
-│   ├── color.npz           # Pre-computed SVD components for color playground image
-│   └── grayscale.npz       # Pre-computed SVD components for grayscale playground image
+│   ├── color.svd           # Pre-computed SVD components for color playground image
+│   └── grayscale.svd       # Pre-computed SVD components for grayscale playground image
 ├── landing_page.py          # Main landing page with navigation
 ├── pages/
 │   ├── compressor.py        # Image compression tool
@@ -92,7 +92,7 @@ The application will open in your default web browser (typically http://localhos
 ### Landing Page (`landing_page.py`)
 The main entry point featuring navigation sections:
 
-- **Playground**: Jump into interactive SVD compression experiments
+- **Playground**: Jump into interactive SVD compression and PCA experiments
 - **Compressor**: Upload and compress your own images
 - **Image Viewer**: View standard images or custom SVD compressed files
 - **Documentation**: Link to the detailed mathematical explanation notebook
@@ -116,7 +116,7 @@ Interactive mode supporting two choices of application:
 - Control the number of projection dashed lines to visualize the orthogonal distance to the principal axes.
 
 Features:
-- Loads pre-computed SVD assets ([color.npz](file:///home/ojas/Python-Projects/Singular-Value-Decomposition/web_app/assets/color.npz) and [grayscale.npz](file:///home/ojas/Python-Projects/Singular-Value-Decomposition/web_app/assets/grayscale.npz)) for the sample image, avoiding SVD recalculations on every page rerun/reload.
+- Uses `@st.cache_resource` to load pre-computed SVD assets (`color.svd` and `grayscale.svd`) once per session, avoiding redundant SVD recalculations on every page rerun/reload.
 - Interactive controls for real-time parameter tuning.
 - Visual feedback on compression quality and PCA projections.
 
@@ -125,7 +125,7 @@ Practical tool for compressing your own images:
 
 - File uploader for PNG, JPG, and JPEG formats
 - Grayscale/color toggle
-- `k` input prefilled using a default 0.25 compression-ratio estimate
+- `k` input prefilled using a default 0.8 compression-ratio estimate
 - Compressed image preview
 - Download options (PNG, JPEG or SVD format)
 - Home button for navigation
@@ -176,7 +176,7 @@ From the parent project:
 ## Tips for Best Results
 
 - **Playground**: Start with low k values and gradually increase to see compression effects
-- **Compressor**: Use the 0.25 (25%) default compression ratio for a good balance
+- **Compressor**: Use the 0.8 (80%) default compression ratio for a good balance
 - **Color Images**: Color compression will produce larger files than grayscale (3 channels)
 - **File Formats**: For best compression analysis, download as PNG or custom `.svd` format (lossless in SVD terms) to avoid lossy JPEG re-compression
 
@@ -185,6 +185,7 @@ From the parent project:
 - **Image not loading**: Ensure the image file is in a supported format (PNG, JPG, JPEG)
 - **Performance issues**: Reduce the image size or use grayscale mode for faster processing
 - **Missing data file in playground**: Verify that `data/image.png` exists in the project root
+- **Missing asset files**: Verify that `web_app/assets/color.svd` and `web_app/assets/grayscale.svd` exist; these pre-computed SVD files are required for the Image Compression playground
 
 ## Related Resources
 
