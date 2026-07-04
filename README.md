@@ -2,6 +2,51 @@
 
 This repository demonstrates Singular Value Decomposition (SVD) applied to image compression and Principal Component Analysis (PCA). It includes both a from-scratch SVD implementation and an optimized NumPy-based method, plus utilities to compress images, perform PCA, and evaluate reconstruction quality.
 
+## Results:
+### [SVD Lab](https://svdlab.streamlit.app)
+![Landing Page](readme_assets/landing_page_screenshot.png)
+
+Landing page.
+
+![Playground for Image Compression](readme_assets/image_compression_playground_screenshot.png)
+
+Image Compression Playground.
+
+![Compressor](readme_assets/compressor_screenshot.png)
+
+Compressor.
+
+Above image is sourced from [This person does not exist dot com](https://thispersondoesnotexist.com).
+Compressed image is saved in custom binary format (`.svd`)
+
+![Image Viewer](readme_assets/image_viewer_screenshot.png)
+
+Image Viewer. Viewing the compressed `.svd` image.
+
+![PCA Playground, original dataset and principal axes](readme_assets/pca_playground_original_dataset_with_pa_screenshot.png)
+
+PCA Playground.
+
+![PCA Playground, data projected on principal components](readme_assets/data_projected_on_principal_components.png)
+
+PCA Playground.
+
+### Plots:
+The below plots are for the [test image](data/image.png)
+
+![Plot for Grayscale Images](readme_assets/plot_for_grayscale.png)
+
+"Reconstruction Error vs $k$" and "Energy Retained vs $k$" plots for grayscale images.
+
+![Plot for Color Images](readme_assets/plots_for_color.png)
+
+"Reconstruction Error vs $k$" and "Energy Retained vs $k$" plots for color images.
+
+![Percent Compression Ratio vs k plot](readme_assets/percent_compression_vs_k_plot.png)
+
+The above plot takes disk space needed for `np.float32` datatype into account. At $k=102$, a 100% compression ratio is achieved, i.e., the size of processed image is equal to size of original image; increasing $k$ would increase the size of processed image.
+
+
 ## Project Overview
 
 - `mathematical_foundation/svd_from_scratch.py`: Implements SVD using linear algebra fundamentals and eigen-decomposition.
