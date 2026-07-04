@@ -19,9 +19,36 @@ if st.session_state["application_choice"] == "Image Compression":
     @st.cache_resource
     def load_files(grayscale):
         if grayscale:
-            return np.load("./web_app/assets/grayscale.npz")
+            with open("./web_app/assets/grayscale.svd", "rb") as f:
+                f.seek(5)
+                m = int.from_bytes(f.read(4), byteorder="little")
+                n = int.from_bytes(f.read(4), byteorder="little")
+                k = int.from_bytes(f.read(4), byteorder="little")
+                U = np.frombuffer(f.read(m*k*4), dtype=np.float32).reshape(m, k)
+                S = np.frombuffer(f.read(k*4), dtype=np.float32)
+                Vt = np.frombuffer(f.read(n*k*4), dtype=np.float32).reshape(n, k)
+            return U, S, Vt
         else:
-            return np.load("./web_app/assets/color.npz")
+            with open("./web_app/assets/color.svd", "rb") as f:
+                f.seek(5)
+                m = int.from_bytes(f.read(4), byteorder="little")
+                n = int.from_bytes(f.read(4), byteorder="little")
+                k = int.from_bytes(f.read(4), byteorder="little")
+                U_size = m*k*4
+                S_size = k*4
+                Vt_size = n*k*4
+                U_B = np.frombuffer(f.read(U_size), dtype=np.float32).reshape(m, k)
+                S_B = np.frombuffer(f.read(S_size), dtype=np.float32)
+                Vt_B = np.frombuffer(f.read(Vt_size), dtype=np.float32).reshape(n, k)
+
+                U_G = np.frombuffer(f.read(U_size), dtype=np.float32).reshape(m, k)
+                S_G = np.frombuffer(f.read(S_size), dtype=np.float32)
+                Vt_G = np.frombuffer(f.read(Vt_size), dtype=np.float32).reshape(n, k)
+
+                U_R = np.frombuffer(f.read(U_size), dtype=np.float32).reshape(m, k)
+                S_R = np.frombuffer(f.read(S_size), dtype=np.float32)
+                Vt_R = np.frombuffer(f.read(Vt_size), dtype=np.float32).reshape(n, k)
+            return U_B, S_B, Vt_B, U_G, S_G, Vt_G, U_R, S_R, Vt_R
 
     if st.checkbox("Grayscale", value=True, key="grayscale"):
         image = cv.imread(r"data/image.png", cv.IMREAD_GRAYSCALE)
@@ -52,9 +79,7 @@ if st.session_state["application_choice"] == "Image Compression":
         if st.session_state["grayscale"]:
             if "U" not in st.session_state or "S" not in st.session_state or "Vt" not in st.session_state:
                 grayscale = load_files(grayscale=True)
-                st.session_state["U"] = grayscale["U"]
-                st.session_state["S"] = grayscale["S"]
-                st.session_state["Vt"] = grayscale["Vt"]
+                st.session_state["U"], st.session_state["S"], st.session_state["Vt"] = grayscale
             compressed_image = np.clip(reconstruct(st.session_state["U"], st.session_state["S"], st.session_state["Vt"], k=st.session_state["k"]), 0, 255).astype("uint8")
             st.image(compressed_image, caption=f"""Reconstructed Image
                                                    \nCompression Ratio={np.round(metrics.compression_ratio(image.shape, st.session_state['k']), 2)}""")
@@ -66,8 +91,8 @@ if st.session_state["application_choice"] == "Image Compression":
             ]
             if any(i not in st.session_state for i in decompositions):
                 color = load_files(grayscale=False)
-                for i in decompositions:
-                    st.session_state[i] = color[i]
+                for idx, i in enumerate(decompositions):
+                    st.session_state[i] = color[idx]
 
             compressed_image = cv.merge(
                 [
