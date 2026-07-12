@@ -2,8 +2,7 @@ import numpy as np
 
 def svd_from_scratch(A):
     m, n = A.shape
-    max_element = float(np.max(A))
-    A = A.astype(np.float64) / max_element
+    A = A.astype(np.float64) / 255.0
     AtA = A.T @ A
     eigenvalues, eigenvectors = np.linalg.eigh(AtA)
     eigenvalues = eigenvalues[::-1]
@@ -19,4 +18,4 @@ def svd_from_scratch(A):
         if singular_values[i] > 1e-10:
             U[:, i] = (A @ np.array(V[:, i]).T) / singular_values[i]
 
-    return U, S*max_element, V.T
+    return U, S*255.0, V.T
